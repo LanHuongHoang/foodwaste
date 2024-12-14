@@ -234,6 +234,7 @@
                                     <img src="images/interviewees3.png" alt="Image 3">
                                     <div class="overlay">
                                         <p>"They are too expensive without clear benefits."</p>
+                                        <button class="popup-trigger" data-popup="popup1">Learn More</button>
                                     </div>
                                     <div class="image-caption"> Retail Supervisor <div>Taylor</div></div>
                                 </div>
@@ -241,6 +242,8 @@
                                     <img src="images/interviewees2.png" alt="Image 2">
                                     <div class="overlay">
                                         <p>"They are complicated and hard to switch."</p>
+                                        <button class="popup-trigger" data-popup="popup2">Learn More</button>
+
                                     </div>
                                     <div class="image-caption"> Family-Run Restaurant <div>Owner Kai</div></div>
                                 </div>
@@ -248,6 +251,7 @@
                                     <img src="images/interviewees1.png" alt="Image 1">
                                     <div class="overlay">
                                         <p>"They are not common enough yet because food industry is slow."</p>
+                                        <button class="popup-trigger" data-popup="popup3">Learn More</button>
                                     </div>
                                     <div class="image-caption"> Franchise Restaurant <div>Founder Jay</div></div>
                                 </div>
@@ -255,11 +259,32 @@
                                 </div>
 
                             </section>
-
                         </div>
                     </div>
                 </div>
             </section>
+        
+              <!-- Pop-ups -->
+  <div class="popup-container" id="popup1">
+    <div class="popup-content">
+      <span class="close-button">&times;</span>
+      <p>Many businesses, particularly small restaurants and franchises, view the costs of new technologies as “prohibitive”. Without clear proof of return on investment, owners are hesitant to invest in these systems.</p>
+    </div>
+  </div>
+
+  <div class="popup-container" id="popup2">
+    <div class="popup-content">
+      <span class="close-button">&times;</span>
+      <p>New tech often feels overwhelming and hard to learn. Experienced business owners often rely on traditional methods and feel these systems are unnecessary, while frequent staff turnover adds to training challenges. A small family-run restaurant, for instance, would normally prefer relying on personal experience for food inventory management rather than using software​.</p>
+    </div>
+  </div>
+
+  <div class="popup-container" id="popup3">
+    <div class="popup-content">
+      <span class="close-button">&times;</span>
+      <p>The food industry as a whole is slower to adopt technology compared to other industries, partly because of strict government rules and the fact that food spoils quickly. Businesses need affordable, scalable, and user-friendly solutions to overcome these barriers. In particular, franchise owners face the challenge of maintaining quality and consistency across locations, which makes adopting new systems risky.</p>
+    </div>
+  </div>
             <section class="container5">
                 <div class="row">
                     <div class="column col-16">
@@ -370,7 +395,41 @@
                 <p>&copy; 2024 Food Waste Report</p>
             </div>
         </footer>
+<script src="scripts/homepage.js"></script>
+<script>
+// Select all pop-up triggers
+const popupTriggers = document.querySelectorAll('.popup-trigger');
 
+// Add event listeners to each trigger
+popupTriggers.forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const popupId = trigger.getAttribute('data-popup');
+    const popup = document.getElementById(popupId);
+    if (popup) {
+      popup.style.display = 'flex';
+    }
+  });
+});
+
+// Close buttons functionality
+const closeButtons = document.querySelectorAll('.close-button');
+closeButtons.forEach(button => {
+  button.addEventListener('click', (event) => {
+    const popup = event.target.closest('.popup-container');
+    popup.style.display = 'none';
+  });
+});
+
+// Close pop-up when clicking outside the content
+window.addEventListener('click', (event) => {
+  if (event.target.classList.contains('popup-container')) {
+    event.target.style.display = 'none';
+  }
+});
+
+</script>
+
+    </script>
 
     </body>
 </html>
