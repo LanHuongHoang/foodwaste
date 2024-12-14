@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag and Drop Garbage</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      position: relative;
+    }
+
+    .bin {
+      width: 340px;
+      height: auto;
+      display: flex;
+      flex-direction: column; 
+      justify-content: center;
+      align-items: center;
+      position: relative; 
+      margin: 0 auto; 
+    }
+
+    .bin img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bin-message {
+    margin-top: 10px; 
+    font-size: 16px; 
+    text-align: center;
+    font-family: "greycliff-cf", sans-serif; 
+    font-size: 1.3em;
+    font-weight: 600;
+    }
+
+    .garbage {
+      width: 150px;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      cursor: grab;
+    }
+
+    .garbage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .garbage img:hover {
+      animation: wiggle 0.5s ease-in-out infinite; /* Infinite wiggle animation on hover */
+    }
+
+    @keyframes wiggle {
+      0%, 100% {
+        transform: rotate(0deg); /* Initial and final state */
+      }
+      25% {
+        transform: rotate(5deg); /* Rotate slightly clockwise */
+      }
+      50% {
+        transform: rotate(-5deg); /* Rotate slightly counterclockwise */
+      }
+      75% {
+        transform: rotate(5deg); /* Rotate slightly clockwise */
+      }
+    }
+
+    .ghost {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.8;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="bin" id="bin"><img src="image/green bin.png" alt="Bin"><p class="bin-message">Please collect all food waste in the green bin before you proceed.</p></div>
+  <div class="garbage" id="garbage1" style="top: 20px; left: 20px;"><img src="image/apple eaten.png" alt="Eaten Apple"></div>
+  <div class="garbage" id="garbage2" style="bottom: 20px; left: 20px;"><img src="image/bread.png" alt="Bread"></div>
+  <div class="garbage" id="garbage3" style="bottom: 20px; right: 20px;"><img src="image/carrot.png" alt="Carrot"></div>
+  <div class="garbage" id="garbage4" style="top: 50%; right: 10px;"><img src="image/lettuce.png" alt="Lettuce"></div>
+  <div class="garbage" id="garbage5" style="left: 50%; top: 10px;"><img src="image/orange.png" alt="Orange"></div>
+  <div class="garbage" id="garbage6" style="left: 50%; bottom: 10px;"><img src="image/banana.png" alt="Banana"></div>
+
+  <script>
+    const garbageItems = document.querySelectorAll('.garbage');
+    const bin = document.getElementById('bin');
+    let droppedCount = 0;
+    let ghostElement = null; // Temporary element that follows the cursor
+
+    // Helper to create and show the ghost element
+    function createGhostElement(e, garbage) {
+      ghostElement = garbage.cloneNode(true);
+      ghostElement.classList.add('ghost');
+      document.body.appendChild(ghostElement);
+
+      const rect = garbage.getBoundingClientRect();
+      ghostElement.style.width = `${rect.width}px`;
+      ghostElement.style.height = `${rect.height}px`;
+
+      ghostElement.style.left = `${e.pageX - rect.width / 2}px`;
+      ghostElement.style.top = `${e.pageY - rect.height / 2}px`;
+    }
+
+    // Update ghost position
+    function moveGhostElement(e) {
+      if (ghostElement) {
+        ghostElement.style.left = `${e.pageX - ghostElement.offsetWidth / 2}px`;
+        ghostElement.style.top = `${e.pageY - ghostElement.offsetHeight / 2}px`;
+      }
+    }
+
+    // Remove the ghost element
+    function removeGhostElement() {
+      if (ghostElement) {
+        document.body.removeChild(ghostElement);
+        ghostElement = null;
+      }
+    }
+
+    // Add mouse event listeners for drag and drop
+    garbageItems.forEach((garbage) => {
+      garbage.addEventListener('mousedown', (e) => {
+        createGhostElement(e, garbage);
+        garbage.style.visibility = 'hidden';
+
+        // Track mouse movement
+        document.addEventListener('mousemove', moveGhostElement);
+
+        // Stop dragging on mouseup
+        document.addEventListener('mouseup', function onMouseUp(e) {
+          document.removeEventListener('mousemove', moveGhostElement);
+          removeGhostElement();
+
+          const binRect = bin.getBoundingClientRect();
+          const mouseX = e.pageX;
+          const mouseY = e.pageY;
+
+          // Check if the ghost element is dropped in the bin
+          if (
+            mouseX > binRect.left &&
+            mouseX < binRect.right &&
+            mouseY > binRect.top &&
+            mouseY < binRect.bottom
+          ) {
+            garbage.style.display = 'none';
+            droppedCount++;
+
+            // Check if all items are dropped
+            if (droppedCount === garbageItems.length) {
+              alert('All food waste collected! Redirecting...');
+              window.location.href = 'homepage.html'; // Replace with your landing page URL
+            }
+          } else {
+            garbage.style.visibility = 'visible'; // Restore visibility if not dropped in the bin
+          }
+
+          document.removeEventListener('mouseup', onMouseUp);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
